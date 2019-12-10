@@ -1,0 +1,4 @@
+Flask>=1,<2
+Flask-Session>=0,<1
+requests>=2,<3
+msal>=0,<2

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - {{ user["name"] }} - Home</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+</head>
+
+<body>
+  <div class="ui page grid" style="margin: 0.5em 0 0.5em 0;">
+    <div class="stackable row">
+      <div class="sixteen wide column">
+        <header>
+          <div class="ui stackable borderless menu" style="margin: 0.5em 0 0.5em 0;">
+            <div class="item">
+              <img src="{{ url_for('static', filename='images/Irdeto.png') }}">
+            </div>
+            <a class="active item">{{ user["name"] }} <div class="ui label" id="sign_out_btn_inverted">Admin</div>
+            </a>
+            <div class="right item">
+              <a href="/logout">
+                <div class="ui button" id="sign_out_btn">Sign Out</div>
+              </a>
+            </div>
+          </div>
+        </header>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="ui page grid">
+      <div class="eight wide column">
+        <div class="medium header" id="date_1"><strong>Date:</strong> {{ db.admin_1.massage_date }}</div>
+        <div class="medium header" id="masseuse_1"><strong>Name:</strong> {{ db.admin_1.name }}</div>
+        <form class="ui form" action="{{ url_for('update_booking') }}" method="POST">
+        <table class="ui selectable celled table">
+          <tbody>
+            <tr>
+              <td><strong>Update Booking</strong></td>
+              <td>
+                  <input type="time" id="bookingtimeid1" name="bookingtime" value="00:00">
+                  <div style="margin-top: 1em;"></div>
+              </td>
+
+              <td>
+                  <input type="text" id="usernameid1" name="username" value="">
+                  <div style="margin-top: 1em;"></div>
+              </td>
+              <td class="collapsing">
+              <input class="ui toggle button" id="sign_out_btn_inverted" name="btn_update_1" value="Update" type="submit">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        </form>
+        <table class="ui selectable celled table">
+          <thead>
+            <tr>
+              <th style="background-color:#5d176a; color:white;">Time</th>
+              <th style="background-color:#5d176a; color:white;">Name</th>
+              <th style="background-color:#5d176a; color:white;">Cancel</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in db.admin_1.get_schedule_list() %}
+            <tr>
+              <td>{{ item[0]["time"] }}</td>
+              <td>{{ item[0]["booked_by"]["name"] }}</td>
+              <td class="collapsing">
+                <form class="ui form" action="/cancel/{{loop.index - 1}}/{{db.admin_1.name}}/admin" method="POST">
+                      <input class="ui toggle red button" id="force_full_size" name="btn_{{loop.index - 1}}" value="Cancel" type="submit">
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="eight wide column">
+          <div class="ui raised link card" style="max-width: 100%; min-width: 100%;">
+            <div class="content">
+              <div class="header"> Create new massage form</div>
+              <div class="meta">Note: This will reset existing appointments and create a new day with new preferred
+                start & end times</div>
+              <div class="description">
+                <div class="form">
+                  <form class="ui form" action="{{ url_for('reset_data') }}" method="POST">
+                    <strong>Time:</strong>
+                    <input type="time" id="starttimeid1" name="starttime" value="09:00">
+                    <div style="margin-top: 1em;"></div>
+                    <strong>End Time:</strong>
+                    <input type="time" id="endtimeid1" name="endtime" value="15:30">
+                    <div style="margin-top: 1em;"></div>
+                    <strong>Date:</strong>
+                    <input type="date" id="dateid1" name="date" value="{{ db.next_weekday(db.admin_1.massage_date_raw, 3).strftime('%Y-%m-%d') }}">
+                    <div style="margin-top: 1em;"></div>
+                    <input class="ui button" id="sign_out_btn_inverted" type="submit" name="reset" value="Submit {{db.admin_1.name}}">
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="eight wide column">
+        <div class="medium header" id="date_2"><strong>Date:</strong> {{ db.admin_2.massage_date }}</div>
+        <div class="medium header" id="masseuse_2"><strong>Name:</strong> {{ db.admin_2.name }}</div>
+        <form class="ui form" action="{{ url_for('update_booking') }}" method="POST">
+          <table class="ui selectable celled table">
+            <tbody>
+              <tr>
+                <td><strong>Update Booking</strong></td>
+                <td>
+                    <input type="time" id="bookingtimeid2" name="bookingtime" value="00:00">
+                    <div style="margin-top: 1em;"></div>
+                </td>
+
+                <td>
+                    <input type="text" id="usernameid2" name="username" value="">
+                    <div style="margin-top: 1em;"></div>
+                </td>
+                <td class="collapsing">
+                <input class="ui toggle button" id="sign_out_btn_inverted" name="btn_update_2" value="Update" type="submit">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+        <table class="ui selectable celled table">
+          <thead>
+            <tr>
+              <th style="background-color:#5d176a; color:white;">Time</th>
+              <th style="background-color:#5d176a; color:white;">Name</th>
+              <th style="background-color:#5d176a; color:white;">Cancel</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in db.admin_2.get_schedule_list() %}
+            <tr>
+              <td>{{ item[0]["time"] }}</td>
+              <td>{{ item[0]["booked_by"]["name"] }}</td>
+              <td class="collapsing">
+                <form class="ui form" action="/cancel/{{loop.index - 1}}/{{db.admin_2.name}}/admin" method="POST">
+                  <input class="ui toggle red button" id="force_full_size" name="btn_{{loop.index - 1}}" value="Cancel" type="submit">
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="eight wide column">
+          <div class="ui raised link card" style="max-width: 100%; min-width: 100%;">
+            <div class="content">
+              <div class="header"> Create new massage form</div>
+              <div class="meta">Note: This will reset existing appointments and create a new day with new preffered
+                start & end times</div>
+              <div class="description">
+                <div class="form">
+                  <form class="ui form" action="{{ url_for('reset_data') }}" method="POST">
+                    <strong>Time:</strong>
+                    <input type="time" id="starttimeid2" name="starttime" value="09:00">
+                    <div style="margin-top: 1em;"></div>
+                    <strong>End Time:</strong>
+                    <input type="time" id="endtimeid2" name="endtime" value="15:30">
+                    <div style="margin-top: 1em;"></div>
+                    <strong>Date:</strong>
+                    <input type="date" id="dateid2" name="date" value="{{db.next_weekday(db.admin_2.massage_date_raw, 4).strftime('%Y-%m-%d')}}">
+                    <div style="margin-top: 1em;"></div>
+                    <input class="ui button" id="sign_out_btn_inverted" type="submit" name="reset" value="Submit {{db.admin_2.name}}">
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer style="background-color:#5d176a; color:white;">
+    <div class="ui vertical footer segment" style="background-color:#5d176a; color:white;">
+      <div class="ui container" style="background-color:#5d176a; color:white;">
+        &copy;2019 Irdeto & Massage App Team
+      </div>
+        <div class="ui container">
+          <form class="ui form" action="/full_reset" method="POST">
+            <input class="ui toggle button" id="full_reset" name="btn_update_1" value="RESET" type="submit">
+          </form>
+        </div>
+    </div>
+  </footer>
+</body>
+
+</html>

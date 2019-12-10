@@ -1,0 +1,52 @@
+#sign_out_btn {
+  background-color: #5d176a;
+  color: white;
+}
+
+#sign_out_btn_inverted {
+  background-color: #aebf1e;
+  color: white;
+}
+
+#force_full_size {
+  max-width: 100% !important;
+  min-width: 100% !important;
+}
+
+main {
+  min-height:100%;
+  padding-bottom:60px;
+  box-sizing:border-box;
+}
+
+footer {
+  background-color: #212121;
+  position: absolute;
+  margin-top: -50px; 
+  left: 0;
+  width: 100%;
+  padding: 15px 0;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+}
+
+.bg {
+  /* The image used */
+  background-color: #5d176a;
+  background: url("../images/bg.jpg") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}

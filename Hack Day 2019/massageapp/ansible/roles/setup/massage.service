@@ -1,0 +1,14 @@
+[Unit]
+Description=Gunicorn instance to serve Massage App
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/gunicorn --workers 3 --bind unix:app.sock -m 007 wsgi:app
+User=itsadmin
+Group=www-data
+WorkingDirectory=/home/massage/massageapp
+Environment="PATH=/usr/local/bin:/usr/bin:/home/massage/massageapp"
+
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+---
+- name: Configuration begins!
+  hosts: massage
+  remote_user: "{{ ansible_user }}" # Remote user
+  become: yes
+  roles:
+   - setup
+  

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard - {{ user.get("name") }} - Home</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+</head>
+<body>
+  <div class="ui page grid" style="margin: 0.5em 0 0.5em 0;">
+    <div class="stackable row">
+      <div class="sixteen wide column">
+        <header>
+            <div class="ui stackable borderless menu" style="margin: 0.5em 0 0.5em 0;">
+              <div class="item">
+                <img src="{{ url_for('static', filename='images/Irdeto.png') }}">
+              </div>
+            <a class="active item"><strong>{{ user.get("name") }}</strong></a>
+            <div class="right item">
+              <a href="/logout">
+                <div class="ui button" id="sign_out_btn">Sign Out</div>
+              </a>
+            </div>
+          </div>
+        </header>
+      </div>
+    </div>
+  </div>
+
+    <main>
+      <div class="ui page grid">
+        {% if user["status"] %}
+              <div class="sixteen wide column">
+                  <table class="ui selectable celled table">
+                    <tbody>
+                        <tr>
+                            <td><strong>{{ user["status"] }}</strong></td>
+                            <td class="collapsing">
+                                <form class="ui form" action="/clear_status" method="POST">
+                                    <input class="ui toggle red button" id="remove_status" name="btn_clear_user_status" value="X" type="submit">
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                  </table>
+              </div>
+        {% else %}
+            <div class="sixteen wide column">
+              <div class="ui raised card" id="force_full_size">
+                <div class="content">
+                  <p><strong>{{db.get_wait_list_status(user)}}</strong></p>
+                </div>
+              </div>
+            </div>
+        {% endif %}
+        <div class="eight wide column">
+          <div class="medium header" id="date_1"><strong>Date:</strong> {{ db.admin_1.massage_date }}</div>
+          <div class="medium header" id="masseuse_1"><strong>Name:</strong> {{ db.admin_1.name }}</div>
+          <div class="medium header" id="wait_list_1"><strong>Users Currently Waiting:</strong> {{ db.admin_1.len_wait_list() }}</div>
+          <br>
+          <form class="ui form" action="/wait_list/add/{{ db.admin_1.name }}" method="POST">
+            <input class="ui toggle button" id="force_full_size" value="Join Waitlist for {{ db.admin_1.name }}" type="submit">
+          </form>
+          <form class="ui form" action="/wait_list/remove/{{ db.admin_1.name }}" method="POST">
+            <input class="ui toggle button" id="force_full_size" value="Leave Waitlist for {{ db.admin_1.name }}" type="submit">
+          </form>
+          <table class="ui selectable celled table">
+            <thead>
+              <tr>
+                <th style="background-color:#5d176a; color:white;">Time</th>
+                <th style="background-color:#5d176a; color:white;">Name</th>
+                <th style="background-color:#5d176a; color:white;">Book</th>
+                <th style="background-color:#5d176a; color:white;">Cancel</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for item in db.admin_1.get_schedule_list() %}
+                    <tr>
+                        <td>{{ item[0]["time"] }}</td>
+                        <td>{{ item[0]["booked_by"]["name"] }}</td>
+                        <td class="collapsing">
+                            <form class="ui form" action="/book/{{loop.index - 1}}/{{db.admin_1.name}}" method="POST">
+                                <input class="ui toggle button" id="sign_out_btn_inverted" name="btn_{{loop.index - 1}}" value="Book" type="submit">
+                            </form>
+                        </td>
+                        <td class="collapsing">
+                          <form class="ui form" action="/cancel/{{loop.index - 1}}/{{db.admin_1.name}}/user" method="POST">
+                                <input class="ui toggle red button" id="force_full_size" name="btn_{{loop.index - 1}}" value="Cancel" type="submit">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="eight wide column">
+          <div class="medium header" id="date_2"><strong>Date:</strong> {{ db.admin_2.massage_date }}</div>
+          <div class="medium header" id="masseuse_2"><strong>Name:</strong> {{ db.admin_2.name }}</div>
+          <div class="medium header" id="wait_list_2"><strong>Users Currently Waiting:</strong> {{ db.admin_2.len_wait_list() }}</div>
+           <br>
+          <form class="ui form" action="/wait_list/add/{{ db.admin_2.name }}" method="POST">
+            <input class="ui toggle button" id="force_full_size" value="Join Waitlist for {{ db.admin_2.name }}" type="submit">
+          </form>
+          <form class="ui form" action="/wait_list/remove/{{ db.admin_2.name }}" method="POST">
+            <input class="ui toggle button" id="force_full_size" value="Leave Waitlist for {{ db.admin_2.name }}" type="submit">
+          </form>
+          <table class="ui selectable celled table">
+            <thead>
+              <tr>
+                <th style="background-color:#5d176a; color:white;">Time</th>
+                <th style="background-color:#5d176a; color:white;">Name</th>
+                <th style="background-color:#5d176a; color:white;">Book</th>
+                <th style="background-color:#5d176a; color:white;">Cancel</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for item in db.admin_2.get_schedule_list() %}
+                    <tr>
+                        <td>{{ item[0]["time"] }}</td>
+                        <td>{{ item[0]["booked_by"]["name"] }}</td>
+                        <td class="collapsing">
+                            <form class="ui form" action="/book/{{loop.index - 1}}/{{db.admin_2.name}}" method="POST">
+                                <input class="ui toggle button" id="sign_out_btn_inverted" name="btn_{{loop.index - 1}}" value="Book" type="submit">
+                            </form>
+                        </td>
+                        <td class="collapsing">
+                            <form class="ui form" action="/cancel/{{loop.index - 1}}/{{db.admin_2.name}}/user" method="POST">
+                                <input class="ui toggle red button" id="force_full_size" name="btn_{{loop.index - 1}}" value="Cancel" type="submit">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+  </main>
+
+<footer style="background-color:#5d176a; color:white;">
+    <div class="ui vertical footer segment" style="background-color:#5d176a; color:white;">
+        <div class="ui container" style="background-color:#5d176a; color:white;">
+            &copy;2019 Irdeto & Massage App Team
+        </div>
+    </div>
+</footer>
+</body>
+</html>

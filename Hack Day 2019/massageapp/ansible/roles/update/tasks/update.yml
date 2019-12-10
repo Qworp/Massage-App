@@ -1,0 +1,20 @@
+---
+- name: Module installs
+  pip:
+    name: 
+      - Flask>=1,<2
+      - Flask-Session>=0,<1
+      - requests>=2,<3
+      - msal>=0,<2
+      - pyopenssl
+      - docker
+      - docker-compose
+      - gunicorn
+      - python-dotenv
+    executable: 'pip2'
+
+- name: .env file
+  copy:
+    dest: "/home/massage/.env"
+    content: "{{ dot_env }}"
+    

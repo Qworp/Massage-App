@@ -1,0 +1,85 @@
+---
+- name: Make sure packages are installed
+  apt:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python-pip' ,'nginx', 'python', 'gunicorn', 'ansible']
+    state: present
+    update_cache: yes
+
+- name: Module installs
+  pip:
+    name: 
+      - Flask>=1,<2
+      - Flask-Session>=0,<1
+      - requests>=2,<3
+      - msal>=0,<2
+      - pyopenssl
+      - docker
+      - docker-compose
+      - gunicorn
+      - python-dotenv
+    executable: 'pip2'
+
+- name: Make sure the data directory exists (nginx)
+  file:
+    path: /etc/nginx/conf.d
+    state: directory
+    mode: u+rwx,g+rwx,o=rw
+    owner: "1030"
+
+- name: Make sure the data directory exists (nginx/ssl)
+  file:
+    path: /etc/nginx/conf.d/ssl
+    state: directory
+    mode: u+rwx,g+rwx,o=rw
+
+- name: Copy the SSL cert
+  copy:
+    content: "{{ ssl_crt }}"
+    dest: /etc/nginx/conf.d/ssl/{{ ssl_hostname }}.crt
+    mode: 0400
+    owner: "101"
+    group: "101"
+
+- name: Copy the SSL key
+  copy:
+    content: "{{ ssl_key }}"
+    dest: /etc/nginx/conf.d/ssl/{{ ssl_hostname }}.key
+    mode: 0400
+    owner: "101"
+    group: "101"
+
+- name: Create SSL password file
+  copy:
+    content: "{{ ssl_key_file_content }}"
+    dest: /etc/nginx/conf.d/ssl/key.txt
+    owner: "101"
+    group: "101"
+    mode: 0400
+    
+- name: Template out the nginx conf
+  template:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+
+- name: Set up the service
+  template:
+    src: massage.service
+    dest: /etc/systemd/system/massage.service
+
+- name: Create 'massage' group
+  group:
+    name: massage
+    state: present
+    gid: "1024"
+
+- name: Create 'massage' user
+  user:
+    name: "massage"
+    groups:
+      - "sudo"
+    shell: /bin/bash
+    group: "massage"
+    state: present
+    create_home: yes
+    uid: "1024"
+    password: "{{ add_remote_installer_pw }}"
